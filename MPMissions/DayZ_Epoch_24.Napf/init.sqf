@@ -35,17 +35,22 @@ DynamicVehicleDamageLow = 0; // Default: 0
 DynamicVehicleDamageHigh = 100; // Default: 100
 DZE_BuildOnRoads = false; // Default: False
 DZE_MissionLootTable = true;
-DZE_ConfigTrader = true;
+
 EpochEvents = [["any","any","any","any",30,"crash_spawner"],["any","any","any","any",0,"crash_spawner"],["any","any","any","any",15,"supply_drop"]];
 dayz_fullMoonNights = true;
+
+
+DZE_ConfigTrader = true;
+DZE_AsReMix_PLAYER_HUD = true; //Open Custom 	AsReMix Player HUD
+
 //Load in compiled functions
-call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\variables.sqf";				//Initilize the Variables (IMPORTANT: Must happen very early)
+call compile preprocessFileLineNumbers "init\variables.sqf";				//Initilize the Variables (IMPORTANT: Must happen very early)
 progressLoadingScreen 0.1;
 call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\publicEH.sqf";				//Initilize the publicVariable event handlers
 progressLoadingScreen 0.2;
 call compile preprocessFileLineNumbers "\z\addons\dayz_code\medical\setup_functions_med.sqf";	//Functions used by CLIENT for medical
 progressLoadingScreen 0.4;
-call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\compiles.sqf";				//Compile regular functions
+call compile preprocessFileLineNumbers "init\compiles.sqf";				//Compile regular functions
 progressLoadingScreen 0.5;
 call compile preprocessFileLineNumbers "server_traders.sqf";				//Compile trader configs
 progressLoadingScreen 1.0;
@@ -68,6 +73,20 @@ _playerMonitor = 	[] execVM "\z\addons\dayz_code\system\player_monitor.sqf";
 //Lights
 //[false,12] execVM "\z\addons\dayz_code\compile\local_lights_init.sqf";
 };
+
+// Zupa - SC
+execVM "gold\init.sqf";
+execVM "gold\addbankmarkers.sqf";
+// END Zupa - SC
+
+///#include "\z\addons\dayz_code\system\REsec.sqf"
+
 //Start Dynamic Weather
 execVM "\z\addons\dayz_code\external\DynamicWeatherEffects.sqf";
 #include "\z\addons\dayz_code\system\BIS_Effects\init.sqf"
+
+if (!isDedicated) then {
+if (DZE_AsReMix_PLAYER_HUD) then {
+	execVM "addons\playerhud\playerHud.sqf"//AsReMix Player HUD
+};
+};
