@@ -17,7 +17,7 @@ _textPartOut = (_this select 3) select 6;
 
 //_qty = {_x == _part_in} count magazines player;  // jouw oud geld
 
-_qty = player getVariable ["headShots",0]; // jouw nieuw geld
+_qty = player getVariable ["cashMoney",0]; // jouw nieuw geld
 
 
 
@@ -132,8 +132,3 @@ for "_x" from 1 to _total_trades do {
 	
 
 DZE_ActionInProgress = false;
-
-_cid =	player getVariable ["CharacterID","0"];
-_headShotsZupa = player getVariable ["headShots",0];
-_key = format["CHILD:999:UPDATE `character_data` SET `HeadshotsZ` = %1 WHERE `CharacterID` = %2:[0]:",_headShotsZupa,_cid];
-_result = _key call server_hiveReadWrite;

@@ -29,11 +29,9 @@ fnc_plyrHit   =					compile preprocessFileLineNumbers "\z\addons\dayz_server\com
 server_deaths = 				compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_playerDeaths.sqf";
 server_maintainArea = 			compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_maintainArea.sqf";
 
-// Zupa - SC
-execVM "\z\addons\dayz_server\bankzones\banks.sqf";
-
 /* PVS/PVC - Skaronator */
 server_sendToClient =			compile preprocessFileLineNumbers "\z\addons\dayz_server\compile\server_sendToClient.sqf";
+#include "\z\addons\dayz_server\bankzones\bankinit.sqf"
 
 //onPlayerConnected 			{[_uid,_name] call server_onPlayerConnect;};
 onPlayerDisconnected 		{[_uid,_name] call server_onPlayerDisconnect;};

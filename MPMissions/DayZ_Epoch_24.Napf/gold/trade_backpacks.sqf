@@ -18,7 +18,7 @@ _bos = 0;
 
 if(_buy_o_sell == "buy") then {
 	//_qty = {_x == _part_in} count magazines player;
-	_qty = player getVariable ["headShots",0]; // get your money variable	
+	_qty = player getVariable ["cashMoney",0]; // get your money variable	
 } else {
 	_bos = 1;
 	_qty = 0;
@@ -74,7 +74,7 @@ if (_qty >= _qty_in) then {
 		// Double check we still have parts
 		if(_buy_o_sell == "buy") then {
 			//_qty = {_x == _part_in} count magazines player;
-			_qty = player getVariable ["headShots",0]; // get your money variable	
+			_qty = player getVariable ["cashMoney",0]; // get your money variable	
 		} else {
 			_qty = 0;
 			_bag = unitBackpack player;
@@ -104,9 +104,8 @@ if (_qty >= _qty_in) then {
 
 					//_num_removed = ([player,_part_in,_qty_in] call BIS_fnc_invRemove);
 					_qtychange = _qty - _qty_in;
-					player setVariable ["headShots", _qtychange , true];
-					player setVariable ["moneychanged",1,true];	
-					_newM = player getVariable ["headShots",0];
+					player setVariable ["cashMoney", _qtychange , true];
+					_newM = player getVariable ["cashMoney",0];
 					//_removed = ([player,_part_in,_qty_in] call BIS_fnc_invRemove);
 					
 					_num_removed = _qty - _newM; // 
@@ -124,10 +123,9 @@ if (_qty >= _qty_in) then {
 						//	player addMagazine _part_out;
 						//};
 						
-						_myMoney = player getVariable ["headShots",0];
+						_myMoney = player getVariable ["cashMoney",0];
 						_myMoney = _myMoney + _qty_out;
-						player setVariable ["headShots", _myMoney , true];
-						player setVariable ["moneychanged",1,true];	
+						player setVariable ["cashMoney", _myMoney , true];
 								
 						
 					};
@@ -152,9 +150,3 @@ if (_qty >= _qty_in) then {
 };
 
 DZE_ActionInProgress = false;
-
-
-_cid =	player getVariable ["CharacterID","0"];
-_headShotsZupa = player getVariable ["headShots",0];
-_key = format["CHILD:999:UPDATE `character_data` SET `HeadshotsZ` = %1 WHERE `CharacterID` = %2:[0]:",_headShotsZupa,_cid];
-_result = _key call server_hiveReadWrite;

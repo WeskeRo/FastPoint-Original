@@ -23,7 +23,7 @@ _bos = 0;
 
 if(_buy_o_sell == "buy") then {
 	//_qty = {_x == _part_in} count magazines player;
-	_qty = player getVariable ["headShots",0]; // get your money variable	
+	_qty = player getVariable ["cashMoney",0]; // get your money variable	
 } else {
 	_obj = nearestObjects [(getPosATL player), [_part_in], dayz_sellDistance_boat];
 	_qty = count _obj;
@@ -76,7 +76,7 @@ if (_qty >= _qty_in) then {
 		// Double check for items
 		if(_buy_o_sell == "buy") then {
 			//_qty = {_x == _part_in} count magazines player;
-			_qty = player getVariable ["headShots",0]; // get your money variable	
+			_qty = player getVariable ["cashMoney",0]; // get your money variable	
 		} else {
 			_obj = nearestObjects [(getPosATL player), [_part_in], dayz_sellDistance_boat];
 			_qty = count _obj;
@@ -87,7 +87,7 @@ if (_qty >= _qty_in) then {
 			//["PVDZE_obj_Trade",[_activatingPlayer,_traderID,_bos]] call callRpcProcedure;
 			if (isNil "_obj") then { _obj = "Unknown Vehicle" };
 			if (isNil "inTraderCity") then { inTraderCity = "Unknown Trader City" };
-			PVDZE_obj_Trade = [_activatingPlayer,_traderID,_bos,_obj,inTraderCity,CurrencyName,_qty_in];
+			PVDZE_obj_Trade = [_activatingPlayer,_traderID,_bos,_obj,inTraderCity];
 			publicVariableServer  "PVDZE_obj_Trade";
 	
 			//diag_log format["DEBUG Starting to wait for answer: %1", PVDZE_obj_Trade];
@@ -119,9 +119,8 @@ if (_qty >= _qty_in) then {
 						//_removed = ([player,_part_in,_qty_in] call BIS_fnc_invRemove);
 						
 						_qtychange = _qty - _qty_in;
-					player setVariable ["headShots", _qtychange , true];
-					player setVariable ["moneychanged",1,true];	
-					_newM = player getVariable ["headShots",0];
+					player setVariable ["cashMoney", _qtychange , true];
+					_newM = player getVariable ["cashMoney",0];
 					//_removed = ([player,_part_in,_qty_in] call BIS_fnc_invRemove);
 					
 					_removed = _qty - _newM; // 
@@ -168,10 +167,9 @@ if (_qty >= _qty_in) then {
 
 					if(_okToSell and !isNull _obj and alive _obj) then {
 
-						_myMoney = player getVariable ["headShots",0];
+						_myMoney = player getVariable ["cashMoney",0];
 						_myMoney = _myMoney + _qty_out;
-						player setVariable ["headShots", _myMoney , true];
-						player setVariable ["moneychanged",1,true];	
+						player setVariable ["cashMoney", _myMoney , true];
 
 						_objectID 	= _obj getVariable ["ObjectID","0"];
 						_objectUID	= _obj getVariable ["ObjectUID","0"];
@@ -207,8 +205,3 @@ if (_qty >= _qty_in) then {
 };
 
 DZE_ActionInProgress = false;
-
-_cid =	player getVariable ["CharacterID","0"];
-_headShotsZupa = player getVariable ["headShots",0];
-_key = format["CHILD:999:UPDATE `character_data` SET `HeadshotsZ` = %1 WHERE `CharacterID` = %2:[0]:",_headShotsZupa,_cid];
-_result = _key call server_hiveReadWrite;

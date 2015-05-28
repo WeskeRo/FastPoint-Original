@@ -5,6 +5,7 @@ private ["_characterID","_playerObj","_playerID","_dummy","_worldspace","_state"
 _characterID = _this select 0;
 _playerObj = _this select 1;
 _playerID = getPlayerUID _playerObj;
+_playerName = name _playerObj;
 
 if (isNull _playerObj) exitWith {
 	diag_log ("SETUP INIT FAILED: Exiting, player object null: " + str(_playerObj));
@@ -33,6 +34,10 @@ if ( _playerID != _dummy ) then {
 _worldspace = 	[];
 
 _state = 		[];
+//Soul start: SC Edit >>> initialize variables in main scope (helps avoiding scope issues within the file and avoids undeclared variable errors in rpt, aswell they server as default values if anything goes wrong)
+_cashMoney = 0;
+_bankMoney = 0;
+//Soul end: SC Edit
 
 //Do Connection Attempt
 _doLoop = 0;
@@ -60,6 +65,9 @@ _state =		_primary select 3;
 _worldspace = 	_primary select 4;
 _humanity =		_primary select 5;
 _lastinstance =	_primary select 6;
+//Soul start: SC Edit >>> loading player cash into variable / overwriting default 0 value with returned value.
+_cashMoney = 	_primary select 7;
+//Soul end: SC Edit
 
 //Set position
 _randomSpot = false;
@@ -168,8 +176,6 @@ if (count _stats > 0) then {
 	_playerObj setVariable["humanKills",0,true];
 	_playerObj setVariable["banditKills",0,true];
 	_playerObj setVariable["headShots",0,true];
-	_playerObj setVariable ["moneychanged",0,true];	
-	_playerObj setVariable ["bankchanged",0,true];	
 	_playerObj setVariable ["friendlies",[],true];
 	_playerObj setVariable["AsReMixhud", true,true];
 	
@@ -240,7 +246,10 @@ _playerObj setVariable["humanity_CHK",_humanity];
 //_playerObj setVariable["worldspace",_worldspace,true];
 //_playerObj setVariable["state",_state,true];
 _playerObj setVariable["lastPos",getPosATL _playerObj];
-
+//Soul start: SC Edit >>> assigning player new variable for cashmoney and bankMoney
+_playerObj setVariable ["cashMoney",_cashMoney,true];
+_playerObj setVariable ["cashMoney_CHK",_cashMoney];
+//Soul end: SC Edit
 dayzPlayerLogin2 = [_worldspace,_state];
 
 // PVDZE_obj_Debris = DZE_LocalRoadBlocks;
@@ -257,25 +266,22 @@ if (!isNull _playerObj) then {
 _playerObj setVariable ["lastTime",time];
 //_playerObj setVariable ["model_CHK",typeOf _playerObj];
 
-// ------------ ZUPA - Single Currency - Get Bank Value ----------------
-
-_playerIDzupa = getPlayerUID _playerObj;
-_bankingstart = 0;
-if(_playerIDzupa != "")then{
-_key = format["CHILD:999:SELECT `PlayerMorality` FROM `player_data` WHERE `PlayerUID` = '%1':[0]:",_playerIDzupa];
-_result = _key call server_hiveReadWrite;
-_status    = _result select 0;            // get the status of the result
-if (_status == "CustomStreamStart") then {    //check if the stream coming from the hive was opened
-_val = _result select 1;                  // get the number of entries that will be coming in the stream
-if(_val > 0) then {
-_result = _key call server_hiveReadWrite;
-_bankingstart = _result select 0;
+// ------------ SOUL - Single Currency - Get Bank Value ----------------
+_key2 = format["CHILD:298:%1:",_playerID];
+_primary2 = _key2 call server_hiveReadWrite;
+if(count _primary2 > 0) then {
+	if((_primary2 select 0) != "ERROR") then {
+		_bankMoney = _primary2 select 1;
+		_playerObj setVariable["bankMoney",_bankMoney,true];
+		_playerObj setVariable["bankMoney_CHK",_bankMoney];
+	} else {
+		_playerObj setVariable["bankMoney",0,true];
+		_playerObj setVariable["bankMoney_CHK",0];
+	};
+} else {
+	_playerObj setVariable["bankMoney",0,true];
+	_playerObj setVariable["bankMoney_CHK",0];
 };
-};
-_playerObj setVariable["bank",_bankingstart,true];
-};
-
-// ------------ ZUPA - END  ----------------
 
 //diag_log ("LOGIN PUBLISHING: " + str(_playerObj) + " Type: " + (typeOf _playerObj));
 
